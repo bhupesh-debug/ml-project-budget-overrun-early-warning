@@ -1,0 +1,4 @@
+Scenario,Avoided Overrun Exposure ($),Analyst Hours Saved,Direct Labor Savings ($),Total Gross Benefits ($),Year 1 Total Cost ($),Year 1 Net Benefit ($),Year 1 ROI (%),3-Year NPV ($),Payback Period (Months)
+Conservative,1152000.0,640.0,48000.0,1200000.0,125000.0,1075000.0,860.0,2904432.51,0.9
+Base Case (Recommended),3120000.0,960.0,81600.0,3201600.0,110000.0,3091600.0,2810.5,8085635.32,0.3
+Upside,6480000.0,1280.0,121600.0,6601600.0,95000.0,6506600.0,6849.1,16870650.56,0.1

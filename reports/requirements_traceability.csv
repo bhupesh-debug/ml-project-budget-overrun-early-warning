@@ -1,0 +1,13 @@
+Requirement_ID,Requirement_Description,Module,Artifact_Evidence,Status
+REQ-01,Mid-Year Budget Checkpoint Data Generation,src/data_pipeline.py,data/synthetic/budget_checkpoints.csv,VERIFIED
+REQ-02,Pre-Close Feature Engineering (Burn Gap & Run Rate),src/feature_engineering.py,src/feature_engineering.py,VERIFIED
+REQ-03,Logistic Regression Baseline with Odds Ratios,src/regression_analysis.py,reports/regression_analysis.md,VERIFIED
+REQ-04,Continuous OLS Variance Modeling,src/regression_analysis.py,reports/regression_analysis.md,VERIFIED
+REQ-05,Permutation Feature Importance Ranking,src/evaluate.py,reports/feature_importance.png,VERIFIED
+REQ-06,Model Benchmarking (Logit vs GBM vs Rule),src/evaluate.py,reports/model_report.md,VERIFIED
+REQ-07,Review Capacity Stress Test (10% to 40%),src/simulation.py,reports/simulation_report.md,VERIFIED
+REQ-08,5000-Run Monte Carlo Portfolio Exposure,src/simulation.py,reports/simulation_distribution.png,VERIFIED
+REQ-09,Financial Business Case & 3-Scenario ROI,src/business_case.py,reports/business_case.md,VERIFIED
+REQ-10,Executive Slide Deck Presentation,slides/generate_deck.py,slides/project_deck.pptx,VERIFIED
+REQ-11,Model Card (SR 11-7),docs/model_card.md,docs/model_card.md,VERIFIED
+REQ-12,Automated Test Suite (Pytest),tests/test_pipeline.py,Pytest Execution Logs,VERIFIED
