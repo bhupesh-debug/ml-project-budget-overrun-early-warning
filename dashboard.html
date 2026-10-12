@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Budget Overrun Early Warning | Quantitative Analysis Lab</title>
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+
+  <!-- Top Sticky Navigation Bar -->
+  <header class="navbar">
+    <div class="nav-brand">
+      <span class="brand-badge">PROJECT 1</span>
+      <span>Budget Overrun Early Warning</span>
+    </div>
+    <ul class="nav-links">
+      <li><a href="../index.html" class="nav-link">← Portfolio Overview</a></li>
+      <li><a href="budget-overrun.html" class="nav-link active">Budget Overrun</a></li>
+      <li><a href="fpa-forecast.html" class="nav-link">FP&A Forecast</a></li>
+      <li><a href="liquidity-stress.html" class="nav-link">Liquidity Stress</a></li>
+      <li><a href="data-quality.html" class="nav-link">Data Quality</a></li>
+      <li><a href="https://github.com/bhupesh-debug/ml-project-budget-overrun-early-warning" target="_blank" class="nav-link" style="color:var(--accent-cyan)">GitHub Repo ↗</a></li>
+    </ul>
+  </header>
+
+  <main class="container">
+    
+    <!-- Hero Header -->
+    <section class="hero">
+      <div class="hero-tagline">
+        <span>★ OPERATING EXPENSE & VARIANCE CONTROL</span>
+      </div>
+      <h1 class="hero-title">Budget Overrun Early-Warning Model & Controller Triage Lab</h1>
+      <p class="hero-desc">
+        Predicting departmental budget lines at risk of exceeding appropriations by >5% at mid-year. Comparing spend-burn heuristics, Logistic Regression scorecards, and gradient boosting across 3,200 contract lines.
+      </p>
+      <div class="hero-meta">
+        <div><strong>Dataset:</strong> 3,200 Mid-Year Checkpoints (FY2022–FY2025)</div>
+        <div><strong>Holdout Test:</strong> FY2025 (839 Budget Lines)</div>
+        <div><strong>Champion:</strong> Logistic Regression (ROC-AUC 0.906)</div>
+        <div><strong>Avoided Exposure:</strong> $17.48M (5,000-Run Monte Carlo Median)</div>
+      </div>
+    </section>
+
+    <!-- Top KPI Row -->
+    <section class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-label">Champion ROC-AUC</div>
+        <div class="kpi-value">0.906</div>
+        <div class="kpi-subtext"><span class="positive">+32.1%</span> vs 0.686 Heuristic Burn Gap</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Capture Rate @ Top 20% Volume</div>
+        <div class="kpi-value text-success">62.1%</div>
+        <div class="kpi-subtext">Captures 131 Overruns vs 75 by Legacy Rule</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Year-1 Net Realized Benefit</div>
+        <div class="kpi-value">$2.77M</div>
+        <div class="kpi-subtext">1.4 Months Payback on $240k Capex</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Probabilistic Brier Calibration</div>
+        <div class="kpi-value">0.103</div>
+        <div class="kpi-subtext">Superior Well-Calibrated Probability Scoring</div>
+      </div>
+    </section>
+
+    <!-- Interactive Simulation Calculator -->
+    <section class="section">
+      <h2 class="section-title">Interactive Budget Review Capacity & Intervention Simulator</h2>
+      <p class="section-desc">Adjust controller review capacity, alert probability threshold, intervention effectiveness, and cost parameters to recalculate true positive captures, avoided dollar exposure, and net financial benefit in real time.</p>
+
+      <div class="simulator-card" id="sim-budget-form">
+        <div class="sim-header">
+          <h3>Controller Queue Resource Allocation Calculator</h3>
+          <p style="font-size:0.85rem; color:var(--text-secondary);">Calculates trade-offs between controller review workload, false alarms, and prevented budget overruns based on the verified out-of-sample logistic probability curve.</p>
+        </div>
+
+        <div class="sim-grid">
+          <!-- Controls Pane -->
+          <div class="controls-pane">
+            <div class="control-group">
+              <label>Budget Lines Monitored: <span class="val-display" id="val-p1-units">3,200</span></label>
+              <input type="range" id="p1-units" min="1000" max="8000" step="200" value="3200">
+            </div>
+
+            <div class="control-group">
+              <label>Review Capacity (% of Lines): <span class="val-display" id="val-p1-capacity">20%</span></label>
+              <input type="range" id="p1-capacity" min="5" max="50" step="5" value="20">
+            </div>
+
+            <div class="control-group">
+              <label>Alert Probability Cutoff (Threshold): <span class="val-display" id="val-p1-threshold">0.42</span></label>
+              <input type="range" id="p1-threshold" min="0.10" max="0.80" step="0.02" value="0.42">
+            </div>
+
+            <div class="control-group">
+              <label>Intervention Effectiveness (% Avoided): <span class="val-display" id="val-p1-effectiveness">60%</span></label>
+              <input type="range" id="p1-effectiveness" min="20" max="95" step="5" value="60">
+            </div>
+
+            <div class="control-group">
+              <label>Average Overrun Loss per Breached Line ($):</label>
+              <input type="number" id="p1-cost-overrun" value="52000" step="5000">
+            </div>
+
+            <div class="control-group">
+              <label>Cost of Controller Review / Intervention ($):</label>
+              <input type="number" id="p1-cost-intervention" value="4500" step="500">
+            </div>
+
+            <div class="control-group">
+              <label>False-Alarm Review Expense ($):</label>
+              <input type="number" id="p1-cost-fp" value="650" step="50">
+            </div>
+          </div>
+
+          <!-- Live Results Pane -->
+          <div class="results-pane">
+            <div class="sim-metrics-row">
+              <div class="sim-kpi">
+                <div class="label">Lines Reviewed</div>
+                <div class="val" id="res-p1-flagged">640</div>
+              </div>
+              <div class="sim-kpi">
+                <div class="label">True Overruns Caught</div>
+                <div class="val text-success" id="res-p1-tp">497</div>
+              </div>
+              <div class="sim-kpi">
+                <div class="label">False Alarms</div>
+                <div class="val text-warning" id="res-p1-fp">143</div>
+              </div>
+              <div class="sim-kpi">
+                <div class="label">Capture Rate (Recall)</div>
+                <div class="val" id="res-p1-recall">62.1%</div>
+              </div>
+            </div>
+
+            <div class="sim-metrics-row">
+              <div class="sim-kpi">
+                <div class="label">Review Precision</div>
+                <div class="val" id="res-p1-precision">77.7%</div>
+              </div>
+              <div class="sim-kpi">
+                <div class="label">Mitigated Overrun Loss</div>
+                <div class="val text-success" id="res-p1-avoided">$15.51M</div>
+              </div>
+              <div class="sim-kpi" style="grid-column: span 2;">
+                <div class="label">Net Realized Value (Mitigation - Triage Cost)</div>
+                <div class="val" id="res-p1-net" style="color:#10B981; font-size:1.8rem;">$13.18M</div>
+              </div>
+            </div>
+
+            <!-- Dynamic SVG Bar Chart -->
+            <div class="chart-box" id="p1-chart-container"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Detailed Analysis Tabs -->
+    <section class="section">
+      <div class="tabs-nav">
+        <button class="tab-btn active" data-target="tab-benchmarks">Model Benchmarks</button>
+        <button class="tab-btn" data-target="tab-regression">Econometric Regression (Logit)</button>
+        <button class="tab-btn" data-target="tab-mc">5,000-Run Monte Carlo</button>
+        <button class="tab-btn" data-target="tab-qa">Q&A Register (8 Questions)</button>
+        <button class="tab-btn" data-target="tab-recommendations">Recommendations & Action Plan</button>
+      </div>
+
+      <!-- Tab 1: Model Benchmarks -->
+      <div class="tab-pane active" id="tab-benchmarks">
+        <div class="table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Model Architecture</th>
+                <th>ROC-AUC</th>
+                <th>PR-AUC</th>
+                <th>Brier Score</th>
+                <th>Recall @ Top 10%</th>
+                <th>Recall @ Top 20%</th>
+                <th>Recall @ Top 30%</th>
+                <th>Architecture Recommendation</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Spend-Burn Gap Heuristic</strong></td>
+                <td>0.686</td>
+                <td>0.435</td>
+                <td>0.185</td>
+                <td>20.4%</td>
+                <td>35.5%</td>
+                <td>48.8%</td>
+                <td>Legacy baseline; high false-alarm rate</td>
+              </tr>
+              <tr>
+                <td><strong>Logistic Regression Scorecard</strong></td>
+                <td><strong class="text-success">0.906</strong></td>
+                <td><strong class="text-success">0.777</strong></td>
+                <td><strong>0.103</strong></td>
+                <td><strong>38.4%</strong></td>
+                <td><strong class="text-success">62.1%</strong></td>
+                <td><strong>78.2%</strong></td>
+                <td><span class="badge badge-emerald">Champion Model</span> (Transparent SQL scorecard)</td>
+              </tr>
+              <tr>
+                <td><strong>HistGradientBoosting</strong></td>
+                <td>0.899</td>
+                <td>0.763</td>
+                <td>0.105</td>
+                <td>37.9%</td>
+                <td>61.6%</td>
+                <td>77.5%</td>
+                <td>Candidate; competitive but unnecessary black-box complexity</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1.5rem; margin-top:1.5rem;">
+          <div class="chart-box">
+            <img src="outputs/p1_feature_importance.png" alt="Feature Importance" style="max-width:100%; height:auto; border-radius:var(--radius-sm);">
+          </div>
+          <div class="chart-box">
+            <img src="outputs/p1_simulation_distribution.png" alt="Monte Carlo Simulation Distribution" style="max-width:100%; height:auto; border-radius:var(--radius-sm);">
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 2: Econometric Regression -->
+      <div class="tab-pane" id="tab-regression">
+        <h3 style="margin-bottom:0.75rem;">Logistic Regression Parameters & Odds Ratios (N=2,361 Train)</h3>
+        <p style="font-size:0.88rem; color:var(--text-secondary); margin-bottom:1.25rem;">
+          Estimates the log-odds of a departmental budget line exceeding appropriations by >5%. Robust standard errors prevent heteroskedasticity distortions.
+        </p>
+
+        <div class="table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Variable Name</th>
+                <th>Coefficient (Log-Odds)</th>
+                <th>Odds Ratio</th>
+                <th>Std Error</th>
+                <th>z-Statistic</th>
+                <th>p-Value</th>
+                <th>95% Confidence Interval</th>
+                <th>VIF</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>`prior_year_variance_pct`</strong></td>
+                <td>+1.4725</td>
+                <td><strong class="text-success">4.3601</strong></td>
+                <td>0.2530</td>
+                <td>+5.82</td>
+                <td>&lt; 0.0001</td>
+                <td>[+0.9766, +1.9684]</td>
+                <td>1.45</td>
+              </tr>
+              <tr>
+                <td><strong>`change_orders_ytd`</strong></td>
+                <td>+1.0818</td>
+                <td><strong class="text-success">2.9500</strong></td>
+                <td>0.2326</td>
+                <td>+4.65</td>
+                <td>&lt; 0.0001</td>
+                <td>[+0.6259, +1.5377]</td>
+                <td>1.62</td>
+              </tr>
+              <tr>
+                <td><strong>`overtime_share`</strong></td>
+                <td>+0.8961</td>
+                <td><strong>2.4500</strong></td>
+                <td>0.2292</td>
+                <td>+3.91</td>
+                <td>&lt; 0.0001</td>
+                <td>[+0.4469, +1.3453]</td>
+                <td>1.78</td>
+              </tr>
+              <tr>
+                <td><strong>`burn_gap`</strong></td>
+                <td>+0.6931</td>
+                <td><strong>2.0000</strong></td>
+                <td>0.2450</td>
+                <td>+2.83</td>
+                <td>0.0047</td>
+                <td>[+0.2129, +1.1733]</td>
+                <td>1.85</td>
+              </tr>
+              <tr>
+                <td><strong>`type_non_labor`</strong></td>
+                <td>+0.6152</td>
+                <td><strong>1.8500</strong></td>
+                <td>0.1972</td>
+                <td>+3.12</td>
+                <td>0.0018</td>
+                <td>[+0.2287, +1.0017]</td>
+                <td>1.25</td>
+              </tr>
+              <tr>
+                <td><strong>`vendor_spend_share`</strong></td>
+                <td>+0.3506</td>
+                <td><strong>1.4200</strong></td>
+                <td>0.1845</td>
+                <td>+1.90</td>
+                <td>0.0574</td>
+                <td>[-0.0110, +0.7122]</td>
+                <td>1.34</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Tab 3: Monte Carlo -->
+      <div class="tab-pane" id="tab-mc">
+        <h3 style="margin-bottom:0.75rem;">5,000-Run Monte Carlo Simulation Synthesis</h3>
+        <p style="font-size:0.88rem; color:var(--text-secondary); margin-bottom:1.25rem;">
+          Stochastic simulation of 3,200 contract lines under parameter uncertainty across spending rates, change orders, and contract dispute frequency.
+        </p>
+
+        <div class="table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Simulation Output Measure</th>
+                <th>10th Percentile (P10)</th>
+                <th>Median Realization (P50)</th>
+                <th>90th Percentile (P90)</th>
+                <th>Decision Implications for Controller</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Total Portfolio Budget</strong></td>
+                <td>$5,859.1M</td>
+                <td>$5,859.1M</td>
+                <td>$5,859.1M</td>
+                <td>Total appropriated departmental spend base</td>
+              </tr>
+              <tr>
+                <td><strong>Gross Overrun Exposure</strong></td>
+                <td>$117.34M</td>
+                <td><strong>$168.88M</strong></td>
+                <td>$241.25M</td>
+                <td>Gross financial downside without intervention</td>
+              </tr>
+              <tr>
+                <td><strong>Incremental Avoided Overrun</strong></td>
+                <td>$12.00M</td>
+                <td><strong class="text-success">$17.48M</strong></td>
+                <td>$25.38M</td>
+                <td>Additional net loss prevented over legacy baseline</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Tab 4: Q&A Register -->
+      <div class="tab-pane" id="tab-qa">
+        <div class="qa-item open">
+          <div class="qa-header">
+            <div><span class="qa-id">Q-P1-001</span> Which factors are most strongly associated with overrun risk?</div>
+            <span>▾</span>
+          </div>
+          <div class="qa-content">
+            <strong>Direct Answer:</strong> Prior-year budget variance (Odds Ratio 4.36x), year-to-date change orders (Odds Ratio 2.95x), overtime share (Odds Ratio 2.45x), and non-labor spending share are the primary statistical determinants.<br>
+            <strong>Evidence:</strong> Logistic regression parameter estimates ($N=2,361, p < 0.001$).<br>
+            <strong>Recommendation:</strong> Institute mandatory change-order reviews whenever a contract line reaches 3 modifications.
+          </div>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-header">
+            <div><span class="qa-id">Q-P1-002</span> Which model performs best out of sample?</div>
+            <span>▾</span>
+          </div>
+          <div class="qa-content">
+            <strong>Direct Answer:</strong> Logistic Regression performs best, achieving ROC-AUC 0.906 and PR-AUC 0.777 on the FY2025 holdout, slightly edging out HistGradientBoosting (ROC-AUC 0.899) and outperforming the rule baseline (0.686).<br>
+            <strong>Evidence:</strong> Time-based holdout evaluation across 839 budget lines.
+          </div>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-header">
+            <div><span class="qa-id">Q-P1-003</span> Does Logistic Regression outperform the existing heuristic?</div>
+            <span>▾</span>
+          </div>
+          <div class="qa-content">
+            <strong>Direct Answer:</strong> Yes, decisively. It provides a +32.1% improvement in ROC-AUC and captures 62.1% of overruns in the top 20% review volume compared to only 35.5% for the spend-burn gap rule.
+          </div>
+        </div>
+
+        <div class="qa-item">
+          <div class="qa-header">
+            <div><span class="qa-id">Q-P1-004</span> What alert threshold provides a reasonable operational trade-off?</div>
+            <span>▾</span>
+          </div>
+          <div class="qa-content">
+            <strong>Direct Answer:</strong> An alert threshold of $p \ge 0.42$ (top 20% review volume) captures 62.1% of overruns with 77.7% precision, minimizing analyst review fatigue while preventing cost leakage.
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 5: Recommendations -->
+      <div class="tab-pane" id="tab-recommendations">
+        <h3 style="margin-bottom:0.75rem;">Phased Implementation Roadmap</h3>
+        <p style="font-size:0.88rem; color:var(--text-secondary); margin-bottom:1.25rem;">
+          Deploying the early-warning model into ERP General Ledger workflows over 12 weeks.
+        </p>
+
+        <div class="table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Phase</th>
+                <th>Timeframe</th>
+                <th>Key Deliverables</th>
+                <th>Responsible Role</th>
+                <th>Success Criteria</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Phase 1: Database View Deployment</strong></td>
+                <td>Weeks 1–4</td>
+                <td>Embed Logistic Regression formula in SAP HANA SQL views</td>
+                <td>Lead Data Engineer</td>
+                <td>Automated daily score calculation</td>
+              </tr>
+              <tr>
+                <td><strong>Phase 2: Controller Queue Pilot</strong></td>
+                <td>Weeks 5–8</td>
+                <td>Pilot top 20% review queue during Q2 mid-year reviews</td>
+                <td>FP&A Controller</td>
+                <td>Capture rate $\ge 60\%$ verified</td>
+              </tr>
+              <tr>
+                <td><strong>Phase 3: Automated Escalation</strong></td>
+                <td>Weeks 9–12</td>
+                <td>Automate executive notifications for lines with change orders &gt; 3</td>
+                <td>IT Finance Systems</td>
+                <td>$2.77M net cost leakage prevented</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    <p>Budget Overrun Early Warning | Lead Architect: <strong>Bhupesh Chandra Dimri</strong> (bhupesh7cd@gmail.com)</p>
+    <p style="margin-top:0.5rem; font-size:0.78rem;"><a href="../index.html">← Return to Master Executive Dashboard</a> | <a href="https://github.com/bhupesh-debug/ml-project-budget-overrun-early-warning" target="_blank">GitHub Repository</a></p>
+  </footer>
+
+  <script src="assets/dashboard.js"></script>
+</body>
+</html>
